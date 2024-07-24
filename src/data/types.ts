@@ -5,10 +5,12 @@ export interface ToDo {
 }
 
 export interface TodoFormProps {
-  addTodo: (text: string) => void; // func take string and return void
+    addOrUpdateTodo: (text: string) => void; // func take string and return void
+    editTodo: ToDo | null;
 }
 
 export interface TodoListProps {
-  todos: ToDo[]; // define the prop array for ToDo items
-  deleteTodo: (id: number) => void; //
+  todos: ToDo[];
+  deleteTodo: (id: number) => void;
+  startEditTodo: (todo: ToDo) => void;
 }
