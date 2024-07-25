@@ -7,10 +7,10 @@ import TodoHeader from "./TodoHeader";
 const TodoPage: React.FC = () => {
   const initialTodos: ToDo[] = [
     { id: 1, text: "Wake ups", completed: true },
-    { id: 2, text: "Go to sala", completed: true },
+    { id: 2, text: "Go to sala", completed: false },
   ];
   const [todos, setTodos] = useState<ToDo[]>(initialTodos);
-  const [editTodo, setEditTodo] = useState<ToDo | null>(null);
+  const [editTodo, setEditTodo] = useState<ToDo | null>(null); // literal
 
   const addOrUpdateTodo = (text: string) => {
     if (editTodo) {
@@ -35,12 +35,14 @@ const TodoPage: React.FC = () => {
   };
 
   return (
-    <div>
-      <div className="">
-        <TodoHeader />
-        <TodoForm addOrUpdateTodo={addOrUpdateTodo} editTodo={editTodo} />
-        <TodoList todos={todos} deleteTodo={deleteTodo} startEditTodo={startEditTodo}/>
-      </div>
+    <div className="">
+      <TodoHeader />
+      <TodoForm addOrUpdateTodo={addOrUpdateTodo} editTodo={editTodo} />
+      <TodoList
+        todos={todos}
+        deleteTodo={deleteTodo}
+        startEditTodo={startEditTodo}
+      />
     </div>
   );
 };
