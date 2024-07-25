@@ -3,8 +3,8 @@ bun create vite
 ```
 
 ```
- bun install
-  bun run dev
+bun install
+bun run dev
 ```
 
 bun install -D tailwindcss   
