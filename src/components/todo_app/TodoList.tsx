@@ -1,6 +1,13 @@
 import React from "react";
-import { TodoListProps } from "../../data/types";
 import { MdDeleteForever, MdEdit } from "react-icons/md";
+import { ToDo } from "./TodoForm";
+
+
+export interface TodoListProps {
+  todos: ToDo[];
+  deleteTodo: (id: number) => void;
+  startEditTodo: (todo: ToDo) => void;
+}
 
 const TodoList: React.FC<TodoListProps> = ({
   todos,

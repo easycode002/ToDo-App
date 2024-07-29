@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import TodoForm from "./TodoForm";
+import TodoForm, { ToDo } from "./TodoForm";
 import TodoList from "./TodoList";
-import { ToDo } from "../../data/types";
 import TodoHeader from "./TodoHeader";
 
 const TodoPage: React.FC = () => {

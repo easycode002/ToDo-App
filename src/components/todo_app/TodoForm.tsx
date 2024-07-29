@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { ToDo } from "../../data/types";
 import { FaEdit, FaPlus } from "react-icons/fa";
 
-interface TodoFormProps {
-  addOrUpdateTodo: (text: string) => void;
+export interface ToDo {
+  id: number; // unuque id for each todo
+  text: string; // text description of the todo
+  completed: boolean; // indicate(ចង្អុលបង្ហាញ)ថាtodo completed or not
+}
+export interface TodoFormProps {
+  addOrUpdateTodo: (text: string) => void; // func take string and return void
   editTodo: ToDo | null;
 }
+
 
 const TodoForm: React.FC<TodoFormProps> = ({ addOrUpdateTodo, editTodo }) => {
   const [input, setInput] = useState<string>("");
