@@ -5,8 +5,6 @@ function App() {
     <>
       <div className="flex flex-col pt-10 items-center bg-neutral-100 h-auto min-h-screen w-screen">
         <div className="w-1/2 flex justify-center">
-          {/* <TodoPage /> */}
-          {/* <MainToDo/> */}
           <FinalToDo/>
         </div>
       </div>
