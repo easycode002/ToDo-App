@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaUserEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
@@ -29,7 +29,8 @@ const initialTodos: ToDoProps[] = [
     task: "Create UI component",
     dateTime: "2022-03-30T10:00:00Z",
     status: false,
-  },{
+  },
+  {
     id: 4,
     task: "Define global state in reactjs",
     dateTime: "2023-04-30T10:00:00Z",
@@ -52,6 +53,21 @@ const FinalToDo: React.FC = () => {
   const [todos, setTodos] = useState<ToDoProps[]>(initialTodos);
   const [newTask, setNewTask] = useState<string>("");
   const [editTaskId, setEditTaskId] = useState<number | null>(null);
+
+  // Load todos from localStorage when the component mounts
+  useEffect(() => {
+    const storedTodos = localStorage.getItem("todos");
+    if (storedTodos) {
+      setTodos(JSON.parse(storedTodos));
+    } else {
+      setTodos(initialTodos);
+    }
+  }, []);
+
+  // Save todos to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
 
   // handle input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -187,7 +203,9 @@ const FinalToDo: React.FC = () => {
                   <div>
                     <h1
                       className={`font-bold text-xl ${
-                        todo.status === false ? "line-through text-gray-200" : ""
+                        todo.status === false
+                          ? "line-through text-gray-200"
+                          : ""
                       }`}
                     >
                       {todo.task}
