@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaUserEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import Cookies from "js-cookie";
 
 // interface ToDo app
 interface ToDoProps {
@@ -8,34 +9,18 @@ interface ToDoProps {
   task: string;
   dateTime: string;
   status: boolean;
+  expiresAt: string;
 }
 
 // sample json data
 const initialTodos: ToDoProps[] = [
-  {
-    id: 1,
-    task: "ស្រលាញ់គេតែម្នាក់ឯង",
-    dateTime: "2021-01-30T10:00:00Z",
-    status: false,
-  },
-  {
-    id: 2,
-    task: "Design web page",
-    dateTime: "2024-02-30T10:00:00Z",
-    status: true,
-  },
-  {
-    id: 3,
-    task: "Create UI component",
-    dateTime: "2022-03-30T10:00:00Z",
-    status: false,
-  },
-  {
-    id: 4,
-    task: "Define global state in reactjs",
-    dateTime: "2023-04-30T10:00:00Z",
-    status: true,
-  },
+  // {
+  //   id: 1,
+  //   task: "ស្រលាញ់គេតែម្នាក់ឯង",
+  //   dateTime: "2021-01-30T10:00:00Z",
+  //   status: false,
+  //   expiresAt:"021-01-30T10:00:00Z",
+  // },
 ];
 
 // can define it in util/helper.tsx
@@ -44,8 +29,19 @@ const formatDate = (dateTime: string) => {
     year: "numeric",
     month: "short",
     day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   };
   return new Date(dateTime).toLocaleDateString("en-US", options);
+};
+
+// Define the formatTime function
+const formatTime = (dateTime: string) => {
+  const options: Intl.DateTimeFormatOptions = {
+    hour: "2-digit",
+    minute: "2-digit",
+  };
+  return new Date(dateTime).toLocaleTimeString("en-US", options);
 };
 
 const FinalToDo: React.FC = () => {
@@ -53,7 +49,8 @@ const FinalToDo: React.FC = () => {
   const [todos, setTodos] = useState<ToDoProps[]>(initialTodos);
   const [newTask, setNewTask] = useState<string>("");
   const [editTaskId, setEditTaskId] = useState<number | null>(null);
-
+  /*
+  // === version store in LocalStorage ===
   // Load todos from localStorage when the component mounts
   useEffect(() => {
     const storedTodos = localStorage.getItem("todos");
@@ -67,6 +64,37 @@ const FinalToDo: React.FC = () => {
   // Save todos to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
+  */
+
+  // === version store in Cookie ===
+  useEffect(() => {
+    const storedTodos = Cookies.get("todos");
+    if (storedTodos) {
+      setTodos(JSON.parse(storedTodos));
+    } else {
+      setTodos(initialTodos);
+    }
+  }, []);
+
+  useEffect(() => {
+    const expiresCookies = new Date(new Date().getTime() + 1 * 60 * 1000);
+    Cookies.set("todos", JSON.stringify(todos), { expires: expiresCookies }); // cookie expire 7 day
+  }, [todos]);
+
+  // handle check periodic check update task status base on expiration time
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date().toISOString();
+      const updatedTodos = todos.map((todo) =>
+        new Date(todo.expiresAt) <= new Date(now)
+          ? { ...todo, status: false }
+          : todo
+      );
+      setTodos(updatedTodos);
+    }, 1000); // Check every second
+
+    return () => clearInterval(interval);
   }, [todos]);
 
   // handle input change
@@ -103,6 +131,9 @@ const FinalToDo: React.FC = () => {
         task: newTask,
         dateTime: new Date().toISOString(),
         status: true,
+        expiresAt: new Date(
+          new Date().getTime() + 10 * 60 * 1000
+        ).toISOString(),
       };
       setTodos([...todos, newToDo]);
     } else {
@@ -212,8 +243,11 @@ const FinalToDo: React.FC = () => {
                     </h1>
                   </div>
                   {/* date of task */}
-                  <div>
-                    <h1>{formatDate(todo.dateTime)}</h1>
+                  <div className="flex gap-3 justify-center items-center">
+                    <h1>{formatDate(todo.dateTime)}</h1>/
+                    <h1 className="text-[0px] text-red-300 flex border-2 bg-neutral-500 p-1 rounded-full">
+                      {formatTime(todo.expiresAt)}
+                    </h1>
                   </div>
                 </div>
               </div>
